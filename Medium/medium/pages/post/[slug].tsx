@@ -95,9 +95,10 @@ function Post({ post }: Props) {
       </article>
       <hr className="my-5 mx-auto max-w-lg border border-yellow-500" />
       {submited ? (
-        <div className="my-10 mx-auto flex max-w-2xl flex-col bg-yellow-500 py-10 text-white">
-          <h3>Thank you for submitting</h3>
-          <p>Comment will appear after approval</p>
+        <div className=" rounded-full border-yellow-600 my-10 mx-auto flex max-w-2xl flex-col bg-yellow-500 py-10 text-white">
+          <h3 className='flex mx-auto text-5xl font-bold '>Thank you for submitting</h3>
+          <hr/>
+          <p className='flex mx-auto'>Comment will appear after approval</p>
         </div>
       ) : (
         <form
