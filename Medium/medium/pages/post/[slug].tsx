@@ -14,6 +14,11 @@ interface IFormInput {
   email: string
   comment: string
 }
+
+interface Props {
+  post: Post
+}
+
 function Post({ post }: Props) {
   const [submited, setSubmited] = useState(false)
   const {
@@ -21,7 +26,8 @@ function Post({ post }: Props) {
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>()
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
     fetch('/api/createComment', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -149,18 +155,19 @@ function Post({ post }: Props) {
           </div>
           <input
             type="submit"
-            className="focus:shadow-outline cursor-pointer rounded bg-yellow-500 py-2 px-4  font-bold text-white shadow hover:bg-yellow-400 focus:outline-none"
+            className="focus:shadow-outline cursor-pointer rounded bg-yellow-500 py-2 px-4 font-bold text-white shadow hover:bg-yellow-400 focus:outline-none"
           />
         </form>
       )}
-      {/*Comments */}
+      {/* Comments */}
+
       <div className="my-10 mx-auto flex max-w-2xl flex-col space-y-2 p-10 shadow shadow-yellow-500">
         <h3 className="text-4xl">Comments</h3>
         <hr className="pb-2" />
         {post.comments.map((comment) => (
           <div key={comment._id}>
             <p>
-              <span className="text-yellow-500">{comment.name}: </span>
+              <span className="text-yellow-500">{comment.name}:</span>{' '}
               {comment.comment}
             </p>
           </div>
@@ -171,7 +178,30 @@ function Post({ post }: Props) {
 }
 
 export default Post
+
 export const getStaticPaths = async () => {
+  const query = `*[_type == "post"]{
+        _id,
+        slug {
+        current
+        }
+    }`
+
+  const posts = await sanityClient.fetch(query)
+
+  const paths = posts.map((post: Post) => ({
+    params: {
+      slug: post.slug.current,
+    },
+  }))
+
+  return {
+    paths,
+    fallback: 'blocking',
+  }
+}
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const query = `*[_type == "post" && slug.current == $slug][0]{
     _id,
     _createdAt,
@@ -189,47 +219,21 @@ export const getStaticPaths = async () => {
   slug,
   body
   }`
-  const posts = await sanityClient.fetch(query)
-  const paths = posts.map((post: Post) => ({
-    params: {
-      slug: post.slug.current,
-    },
-  }))
-  return {
-    paths,
-    fallback: 'blocking',
-  }
-}
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const query = `*[_type == "post" && slug.current == $slug][0]{
-      _id,
-      _createdAt,
-      title,
-      author-> {
-      name,
-      image
-    },
-    'comments':*[
-      _type == "comment" &&
-      post._ref == ^._id &&
-      approved == true],
-    description,
-    mainImage,
-    slug,
-    body
-    }`
+
   const post = await sanityClient.fetch(query, {
     slug: params?.slug,
   })
+
   if (!post) {
     return {
       notFound: true,
     }
   }
+
   return {
     props: {
       post,
-      revalidate: 60,
+      revalidate: 60, // after 60 seconds, till update the old cache version
     },
   }
 }

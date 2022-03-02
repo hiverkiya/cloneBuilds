@@ -66,19 +66,20 @@ export default function Home({ posts }: Props) {
     </div>
   )
 }
+
 export const getServerSideProps = async () => {
-  const query = `
-  *[_type =="post"]{
+  const query = `*[_type == "post"]{
     _id,
     title,
-    author->{
-    name,image
+    author -> {
+    name,
+    image
   },
   description,
   mainImage,
-  slug 
-  }
-  `
+  slug
+  }`
+
   const posts = await sanityClient.fetch(query)
   return {
     props: {
