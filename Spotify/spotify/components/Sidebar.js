@@ -7,12 +7,12 @@ import {
   PlusCircleIcon,
 } from "@heroicons/react/outline";
 import React from "react";
-import { signOut, useSession } from "next-auth/react";
+import { SessionProvider, signOut, useSession } from "next-auth/react";
 function Sidebar() {
   const {data:session,status}= useSession();
   console.log(session)
   return (
-    <div className="text-gray-500 p-5 text-sm border-r border-gray-900 ">
+    <div className="text-gray-500 p-5 text-sm border-r border-gray-900 overflow-y-scroll h-screen ">
       <div>
         <button
           onClick={() => signOut()}
