@@ -1,7 +1,9 @@
 import { ChevronDownIcon } from "@heroicons/react/outline";
 import React, { useEffect, useState } from "react";
 import {shuffle} from "lodash"
+import {useRecoilState, useRecoilValue} from "recoil"
 import { useSession } from "next-auth/react";
+import { playlistIdState } from "../atoms/playlistAtom";
 const colors = [
   "from-indigo-500",
   "from-blue-500",
@@ -15,11 +17,12 @@ const colors = [
 function Center() {
   const { data: session } = useSession();
   const [color,setColor] = useState(null);
+  const playlistId = useRecoilValue(playlistIdState)
 
   useEffect(() => {
     setColor(shuffle(colors).pop())
   },
-  [])
+  [playlistId])
   return (
     <div className="flex-grow">
       <header className="absolute top-5 right-8">

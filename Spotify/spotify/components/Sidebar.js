@@ -9,10 +9,14 @@ import {
 import { useState, useEffect } from "react";
 import useSpotify from "../hooks/useSpotify";
 import { signOut, useSession } from "next-auth/react";
+import { useRecoilState } from "recoil";
+import { playlistIdState } from "../atoms/playlistAtom";
 function Sidebar() {
   const spotifyApi = useSpotify();
   const { data: session, status } = useSession();
   const [playlists, setPlaylists] = useState([]);
+  const [playlistId,setPlaylistId]= useRecoilState(playlistIdState);
+  console.log('Your selected playlist ID is',playlistId);
 
   useEffect(() => {
     if (spotifyApi.getAccessToken()) {
