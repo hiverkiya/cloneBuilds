@@ -1,9 +1,11 @@
 import { ChevronDownIcon } from "@heroicons/react/outline";
 import React, { useEffect, useState } from "react";
-import {shuffle} from "lodash"
-import {useRecoilState, useRecoilValue} from "recoil"
+import { shuffle } from "lodash";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { useSession } from "next-auth/react";
-import { playlistIdState } from "../atoms/playlistAtom";
+import { playlistIdState, playlistState } from "../atoms/playlistAtom";
+import useSpotify from "../hooks/useSpotify";
+import Songs from "./Songs";
 const colors = [
   "from-indigo-500",
   "from-blue-500",
@@ -16,13 +18,23 @@ const colors = [
 
 function Center() {
   const { data: session } = useSession();
-  const [color,setColor] = useState(null);
-  const playlistId = useRecoilValue(playlistIdState)
+  const spotifyApi = useSpotify();
+  const [color, setColor] = useState(null);
+  const playlistId = useRecoilValue(playlistIdState);
+  const [playlist, setPlaylist] = useRecoilState(playlistState);
 
   useEffect(() => {
-    setColor(shuffle(colors).pop())
-  },
-  [playlistId])
+    setColor(shuffle(colors).pop());
+  }, [playlistId]);
+  useEffect(() => {
+    spotifyApi
+      .getPlaylist(playlistId)
+      .then((data) => {
+        setPlaylist(data.body);
+      })
+      .catch((err) => console.log("This error happened: ", err));
+  }, [spotifyApi, playlistId]);
+  console.log(playlist)
   return (
     <div className="flex-grow">
       <header className="absolute top-5 right-8">
@@ -39,8 +51,19 @@ function Center() {
       <section
         className={` flex items-end space-x-7 bg-gradient-to-b to-black ${color} h-80 text-white padding-8`}
       >
-        <h1> hello</h1>
+        <img className="h-44 w-44 shadow-2xl"
+        src={playlist?.images?.[0]?.url}
+        alt=""
+        />
+
+       <div>
+         <p>PLAYLIST</p> {/* First value is always mobile value */}
+         <h1 className="text-2xl md:text-3xl xl:text-5xl font-bold">{playlist?.name}</h1> 
+       </div>
       </section>
+      <div>
+        <Songs/>
+      </div>
     </div>
   );
 }
