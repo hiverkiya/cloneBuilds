@@ -1,3 +1,4 @@
+import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import Center from "../components/Center";
@@ -20,4 +21,13 @@ export default function Home() {
       <div>{/*Player*/}</div>
     </div>
   );
+}
+
+export async function getServerSideProps(context){
+  const session = await getSession(context)
+  return {
+    props:{
+      session
+    }
+  }
 }
