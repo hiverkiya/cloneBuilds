@@ -2,7 +2,7 @@ import { ChevronDownIcon } from "@heroicons/react/outline";
 import React, { useEffect, useState } from "react";
 import { shuffle } from "lodash";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { playlistIdState, playlistState } from "../atoms/playlistAtom";
 import useSpotify from "../hooks/useSpotify";
 import Songs from "./Songs";
@@ -38,7 +38,8 @@ function Center() {
   return (
     <div className="flex-grow h-screen overflow-y-scroll scrollbar-hide">
       <header className="absolute top-5 right-8">
-        <div className="flex items-center text-white bg-black space-x-3 opacity-90 p-1 pr-2 hover:opacity-80 cursor-pointer rounded-full">
+        <div className="flex items-center text-white bg-black space-x-3 opacity-90 p-1 pr-2 hover:opacity-80 cursor-pointer rounded-full "
+        onClick={signOut}>
           <img
             className="rounded-full w-10 h-10"
             src={session?.user.image}
