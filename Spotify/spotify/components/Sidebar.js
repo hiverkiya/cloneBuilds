@@ -2,10 +2,10 @@ import {
   HomeIcon,
   SearchIcon,
   LibraryIcon,
-  HeartIcon,
-  RssIcon,
+    RssIcon,
   PlusCircleIcon,
 } from "@heroicons/react/outline";
+import { HeartIcon } from "@heroicons/react/solid";
 import { useState, useEffect } from "react";
 import useSpotify from "../hooks/useSpotify";
 import { signOut, useSession } from "next-auth/react";
@@ -27,10 +27,10 @@ function Sidebar() {
   }, [session, spotifyApi]);
 
   return (
-    <div className="text-gray-500 p-5 text-xs lg:text-sm  border-r border-gray-900 overflow-y-scroll scrollbar-hide h-screen sm:max-w-[12rem] lg:max-w-[15rem] hidden md:inline-flex pb-36">
-      <div>
+    <div className=" text-gray-500 p-5 text-xs lg:text-sm  border-r border-gray-900 overflow-y-scroll scrollbar-hide h-screen sm:max-w-[12rem] lg:max-w-[15rem] hidden md:inline-flex pb-36">
+      <div className="space-y-6">
       
-        <button className="flex items-center space-x-2 hover:text-white ">
+        <button className="flex items-center space-x-2  hover:text-white ">
           <HomeIcon className="h-5 w-5 " />
           <p>Home</p>
         </button>
@@ -47,12 +47,12 @@ function Sidebar() {
           <PlusCircleIcon className="h-5 w-5 " />
           <p>Create Playlist</p>
         </button>
-        <button className="flex items-center space-x-2 hover:text-white ">
+        <button className="flex text-blue-500 items-center space-x-2 hover:text-white ">
           <HeartIcon className="h-5 w-5 " />
           <p>Liked Songs</p>
         </button>
         <button className="flex items-center space-x-2 hover:text-white ">
-          <RssIcon className="h-5 w-5 " />
+          <RssIcon className="h-5 w-5 text-green-500 " />
           <p>Your Episodes</p>
         </button>
         <hr className="border-t-[0.1]px border-gray-900 " />
