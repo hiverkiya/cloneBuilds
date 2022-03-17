@@ -6,11 +6,22 @@ import {
   RssIcon,
   PlusCircleIcon,
 } from "@heroicons/react/outline";
-import React from "react";
-import { SessionProvider, signOut, useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
+import useSpotify from "../hooks/useSpotify";
+import { signOut, useSession } from "next-auth/react";
 function Sidebar() {
-  const {data:session,status}= useSession();
-  console.log(session)
+  const spotifyApi = useSpotify();
+  const { data: session, status } = useSession();
+  const [playlists, setPlaylists] = useState([]);
+
+  useEffect(() => {
+    if (spotifyApi.getAccessToken()) {
+      spotifyApi.getUserPlaylists().then((data) => {
+        setPlaylists(data.items);
+      });
+    }
+  }, [session, spotifyApi]);
+
   return (
     <div className="text-gray-500 p-5 text-sm border-r border-gray-900 overflow-y-scroll scrollbar-hide h-screen ">
       <div>
@@ -18,7 +29,6 @@ function Sidebar() {
           onClick={() => signOut()}
           className="flex items-center space-x-2 hover:text-white "
         >
-          
           <p>Logout</p>
         </button>
         <button className="flex items-center space-x-2 hover:text-white ">
